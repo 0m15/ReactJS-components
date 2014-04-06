@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+	
+	<meta charset="UTF-8">
+	<title>ReactJS components</title>
+	
+	<script src="app/bower_components/jquery/dist/jquery.js"></script>
+	<script src="app/bower_components/react/react-with-addons.js"></script>
+	<script src="app/bower_components/react/JSXTransformer.js"></script>
+	<script src="build/js/all.js" type="text/jsx"></script>
+	
+	<style>
+	* {
+		margin: 0;
+		padding: 0;
+	}
+	body {
+		font-family: 'Helvetica', sans-serif;
+		color: #444;
+	}
+	
+	/* examples */
+	#content {
+		margin: 0 auto;
+		width: 90%;
+		text-align: left;
+	}
+
+	.cmp-example {
+		border: 1px solid #ccc;
+		padding: 20px;
+		margin: 40px 0;
+	}
+
+	.cmp-example h2 {
+		margin: 20px 0;
+		font-size: 2em;
+	}
+
+	.cmp-code {
+		background: #eee;
+		padding: 20px;
+		border: 1px solid #ccc;
+	}
+
+	.cmp-demo {
+		margin: 40px 0;
+		text-align: center;
+	}
+
+
+	/* testing transitions */
+	.comment-item-enter,
+	.comment-item-leave {
+		opacity: 0;
+		transition: all .4s ease-in-out;
+		-webkit-animation-delay: .2s;
+		animation-delay: .2s;
+	}
+
+	.comment-item-enter {
+		
+	}
+
+	.comment-item-enter.comment-item-enter-active {
+		opacity: 1;
+	}
+	
+
+	/* dropdown */
+	.dropdown,
+	.popover {
+		/*position: relative;*/
+	}
+	
+	.popover .popover-content,
+	.dropdown .dropdown-content,
+	.dropdown .dropdown-menu {
+		opacity: 0;
+		width: 260px;
+		background: #ccc;
+		list-style: none;
+		padding: 0;
+		margin: 0;
+
+	}
+	
+	.popover.open .popover-content,
+	.dropdown.open .dropdown-content,
+	.dropdown.open .dropdown-menu {
+		opacity: 1;
+	}
+
+	.dropdown-btn,
+	.btn-dropdown {
+		background: #eee;
+	}
+	</style>
+</head>
+<body>
+	
+	<div id="content"></div>
+</body>
+</html>
