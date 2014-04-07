@@ -11,7 +11,7 @@
 	<script src="build/js/all.js" type="text/jsx"></script>
 	
 	<style>
-	* {
+	html,body {
 		margin: 0;
 		padding: 0;
 	}
@@ -46,7 +46,6 @@
 
 	.cmp-demo {
 		margin: 40px 0;
-		text-align: center;
 	}
 
 
@@ -76,25 +75,79 @@
 	
 	.popover .popover-content,
 	.dropdown .dropdown-content,
-	.dropdown .dropdown-menu {
+	.dropdown .dropdown-menu,
+	.tooltip .tooltip-content {
 		opacity: 0;
 		width: 260px;
 		background: #ccc;
 		list-style: none;
 		padding: 0;
 		margin: 0;
-
 	}
 	
 	.popover.open .popover-content,
 	.dropdown.open .dropdown-content,
-	.dropdown.open .dropdown-menu {
+	.dropdown.open .dropdown-menu,
+	.tooltip.open .tooltip-content {
 		opacity: 1;
 	}
 
 	.dropdown-btn,
 	.btn-dropdown {
 		background: #eee;
+	}
+
+	/* carousel */
+	.carousel {
+		overflow: hidden;
+		position: relative;
+		height: 340px;
+	}
+	
+	.carousel-item {
+		position: absolute;
+		background: #eee;
+		width: 400px;
+		height: 200px;
+	}
+
+	.carousel-controls {
+		position: absolute;
+		bottom: 20px;
+	}
+	
+	/* carousel transitions */
+	.slide-enter,
+	.slide-leave {
+		transition: all .5s ease-out;
+	}
+
+	.slide-enter {
+		left: 100%;
+	}
+	
+	.slide-enter.slide-enter-active {
+		left: 0;
+	}
+	
+	.slide-leave {
+		left: 0;
+	}
+
+	.slide-leave.slide-leave-active {
+		left: -100%;
+	}
+
+	.backward .slide-enter {
+		left: -100%;
+	}
+
+	.backward .slide-enter.slide-enter-active {
+		left: 0;
+	}
+
+	.backward .slide-leave.slide-leave-active {
+		left: 100%;
 	}
 	</style>
 </head>
