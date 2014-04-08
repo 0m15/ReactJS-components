@@ -10,30 +10,30 @@ Some reusable ReactJS components I'm writing as I learn the library
     items = [{title: 'one'}, {title: 'two'}, {title: 'three'}]
 
 Right anchored dropdown
-    <DropdownExample items={items} title='show menu' placement='down' anchor='right' />
+    `<DropdownExample items={items} title='show menu' placement='down' anchor='right' />`
     
 Left anchored dropup
-    <DropdownExample items={items} title='show menu' placement='up' anchor='left' />
+    `<DropdownExample items={items} title='show menu' placement='up' anchor='left' />`
     
 Centered dropup
-    <DropdownExample items={items} title='show menu' placement='up' anchor='center' />
+    `<DropdownExample items={items} title='show menu' placement='up' anchor='center' />`
     
 ## Popover
 
 A simple popover content
 
-  <PopoverButton placement="right" anchor="center">
-		<h2>I'm inside the popover content</h2>
-		<p>I'm the popover body</p>
-	</PopoverButton>
+  `<PopoverButton placement="right" anchor="center">`
+    `<h2>I'm inside the popover content</h2>`
+    `<p>I'm the popover body</p>`
+  `</PopoverButton>`
 	
 A popover with component inside
 
-  <PopoverButton autoClose={false}>
-		<h2>Popover with a dropdon inside</h2>
-		<p>I'm a composable component</p>
-		<DropdownButton items={items} autoClose={true} onSelect={this.handleDropdownSelect} title="with a dropdown in it" />
-	</PopoverButton>
+  `<PopoverButton autoClose={false}>`
+     `<h2>Popover with a dropdon inside</h2>`
+      `<p>I'm a composable component</p>`
+      `<DropdownButton items={items} autoClose={true} onSelect={this.handleDropdownSelect} title="with a dropdown in it" />`
+  `</PopoverButton>`
 	
 ## Carousel
 
@@ -61,4 +61,4 @@ A simple carosel that "react" to the available viewport
   		'key': 4
   	}
   ]
-  <Carousel items={carouselItems} itemComponent={CarouselCustomItem} />
+  `<Carousel items={carouselItems} itemComponent={CarouselCustomItem} />`
