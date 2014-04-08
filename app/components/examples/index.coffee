@@ -59,6 +59,11 @@ carouselItems = [
 		'title': 'item 3',
 		'img': 'http://placehold.it/400x400',
 		'key': 3
+	},
+	{
+		'title': 'item 4',
+		'img': 'http://placehold.it/400x400',
+		'key': 4
 	}
 ]
 

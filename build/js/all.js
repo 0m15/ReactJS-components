@@ -131,7 +131,7 @@ ToggableStateMixin = PopoverStateMixin = DropdownStateMixin = {
   }
 };
 
-var Carousel, CarouselControls, CarouselItem, CarouselStateMixin, PropTypes, ReactCSSTransitionGroup, ReactTransitionGroup, classSet;
+var Carousel, CarouselControls, CarouselItem, PropTypes, ReactCSSTransitionGroup, ReactTransitionGroup, classSet;
 
 classSet = React.addons.classSet;
 
@@ -140,52 +140,6 @@ ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
 ReactTransitionGroup = React.addons.TransitionGroup;
 
 PropTypes = React.PropTypes;
-
-CarouselStateMixin = {
-  propTypes: {
-    items: PropTypes.array,
-    itemComponent: PropTypes.component
-  },
-  getInitialState: function() {
-    return {
-      index: 0,
-      activeItems: this.props.items.slice(0, 1),
-      direction: 'forward'
-    };
-  },
-  setActiveItem: function(index, direction) {
-    var newItem, newItems;
-    newItem = this.props.items[index];
-    newItems = this.state.activeItems;
-    newItems.pop();
-    newItems.unshift(newItem);
-    return this.setState({
-      index: index,
-      activeItems: newItems,
-      direction: direction
-    });
-  },
-  handleNext: function(e) {
-    var index;
-    e.preventDefault();
-    index = this.state.index;
-    index += 1;
-    if (index === this.props.items.length) {
-      index = 0;
-    }
-    return this.setActiveItem(index, 'forward');
-  },
-  handlePrevious: function(e) {
-    var index;
-    e.preventDefault();
-    index = this.state.index;
-    index -= 1;
-    if (index < 0) {
-      index = this.props.items.length - 1;
-    }
-    return this.setActiveItem(index, 'backward');
-  }
-};
 
 CarouselControls = React.createClass({
   propTypes: {
@@ -207,40 +161,219 @@ CarouselControls = React.createClass({
 });
 
 CarouselItem = React.createClass({
+  getInitialState: function() {
+    return {
+      classes: {
+        'carousel-item': true
+      },
+      style: {
+        'margin-left': 0
+      }
+    };
+  },
   propTypes: {
     item: PropTypes.object,
     itemComponent: PropTypes.component
   },
-  render: function() {
-    var classes;
-    classes = classSet({
-      'carousel-item': true,
-      active: this.props.active
+  componentDidMount: function() {
+    return this.setup();
+  },
+  setup: function() {
+    var self;
+    this.reflow();
+    self = this;
+    return $(this.getDOMNode()).on('transitionend MSTransitionEnd webkitTransitionEnd oTransitionEnd', function() {
+      return self.props.onSlide();
     });
-    return <div className={classes}>
+  },
+  reflow: function() {
+    var el, elWidth, left, style;
+    el = this.getDOMNode();
+    elWidth = $(el).width();
+    left = (this.props.index - 1) * elWidth;
+    style = this.state.style;
+    style.left = left + 'px';
+    return this.setState({
+      style: style
+    });
+  },
+  render: function() {
+    var classes, style;
+    classes = classSet(this.state.classes);
+    style = this.state.style;
+    return <div className={classes} style={style}>
 			{this.props.itemComponent({item: this.props.item})}
 		</div>;
   }
 });
 
 Carousel = React.createClass({
-  mixins: [CarouselStateMixin],
+  propTypes: {
+    items: PropTypes.array,
+    itemComponent: PropTypes.component
+  },
+  getInitialState: function() {
+    return {
+      index: 0,
+      activeItems: this.props.items,
+      direction: 'forward',
+      sliding: false,
+      enabled: false
+    };
+  },
+  componentDidMount: function() {
+    var self;
+    this.setup();
+    self = this;
+    return $(window).on('resize', this.handleWindowResize);
+  },
+  _getViewportWidth: function() {
+    return $(this.getDOMNode()).width();
+  },
+  _getSlides: function() {
+    return $(this.getDOMNode()).find('.carousel-item');
+  },
+  _getSlidesActualWidth: function(index) {
+    var $item, totalWidth;
+    if (index == null) {
+      index = this.state.index;
+    }
+    totalWidth = 0;
+    $item = null;
+    this._getSlides().slice(index).each(function() {
+      $item = $(this);
+      return totalWidth += $item.width();
+    });
+    return totalWidth;
+  },
+  hasNext: function() {
+    var totalWidth, viewportWidth;
+    viewportWidth = this._getViewportWidth();
+    totalWidth = this._getSlidesActualWidth();
+    return totalWidth > viewportWidth;
+  },
+  hasPrevious: function() {
+    return parseInt(this._getSlides()[0].style['margin-left']) < 0;
+  },
+  setup: function() {
+    var enabled, itemsWidth, self, viewportWidth;
+    self = this;
+    itemsWidth = 0;
+    viewportWidth = this._getViewportWidth();
+    itemsWidth = this._getSlidesActualWidth(0);
+    enabled = itemsWidth > viewportWidth;
+    return this.setState({
+      enabled: enabled
+    });
+  },
+  reset: function() {
+    return this._getSlides().each(function() {
+      return $(this).css('margin-left', 0);
+    });
+  },
+  slideTo: function(index, direction) {
+    var $items, exceedingWidth, newOffset, self, sliding;
+    if (!this.state.enabled) {
+      return false;
+    }
+    if (direction === 'forward' && !this.hasNext()) {
+      return false;
+    }
+    if (direction === 'backward' && !this.hasPrevious()) {
+      return false;
+    }
+    if (this.state.sliding) {
+      return false;
+    }
+    self = this;
+    exceedingWidth = 0;
+    newOffset = 0;
+    sliding = true;
+    $items = this._getSlides().each(function() {
+      var $item, itemWidth, lastOffsetLeft, offsetLeft;
+      $item = $(this);
+      itemWidth = $item.width();
+      lastOffsetLeft = parseInt($item.css('margin-left').replace('px', ''));
+      offsetLeft = index * itemWidth;
+      if (direction === 'backward') {
+        newOffset = lastOffsetLeft + $item.width();
+        if (lastOffsetLeft % itemWidth !== 0) {
+          newOffset = lastOffsetLeft - newOffset;
+        }
+        if (lastOffsetLeft === 0) {
+          index = 0;
+          newOffset = 0;
+          return sliding = false;
+        }
+      } else {
+        newOffset = lastOffsetLeft - $item.width();
+        exceedingWidth = self._getSlidesActualWidth() - self._getViewportWidth();
+        if (exceedingWidth < $item.width()) {
+          return newOffset = lastOffsetLeft - exceedingWidth;
+        }
+      }
+    });
+    this.setState({
+      index: index,
+      direction: direction,
+      sliding: sliding
+    });
+    return $items.css('margin-left', newOffset);
+  },
+  handleOnSlide: function() {
+    return this.setState({
+      sliding: false
+    });
+  },
+  handleNext: function(e) {
+    var index;
+    e.preventDefault();
+    index = this.state.index;
+    index += 1;
+    if (index === this.props.items.length) {
+      index = this.props.items.length;
+    }
+    return this.slideTo(index, 'forward');
+  },
+  handlePrevious: function(e) {
+    var index;
+    e.preventDefault();
+    index = this.state.index;
+    index -= 1;
+    if (index < 0) {
+      index = 0;
+    }
+    return this.slideTo(index, 'backward');
+  },
+  handleWindowResize: function(e) {
+    var self;
+    this.setup();
+    self = this;
+    return this.state.activeItems.forEach(function(item) {
+      var ref;
+      ref = self.refs["item" + item.key];
+      return ref.reflow();
+    });
+  },
   render: function() {
     var children, self;
     self = this;
     children = this.state.activeItems.map(function(item, i) {
       return <CarouselItem
-				item={item} 
-				key={item.key} 
+				item={item}
+				index={item.key}
+				currentIndex={self.state.index}
+				key={item.key}
+				direction={self.state.direction}
 				active={i==self.state.index}
 				itemComponent={self.props.itemComponent}
+				ref={'item'+item.key}
+				onSlide={self.handleOnSlide}
 			/>;
     });
     return <div className={"carousel " + this.state.direction}>
-			<ReactCSSTransitionGroup transitionName='slide'>
 				{children}
-			</ReactCSSTransitionGroup>
-			<CarouselControls onNext={this.handleNext} onPrevious={this.handlePrevious}/>
+			<CarouselControls enabled={this.state.enabled} onNext={this.handleNext} onPrevious={this.handlePrevious}/>
 		</div>;
   }
 });
@@ -424,6 +557,10 @@ carouselItems = [
     'title': 'item 3',
     'img': 'http://placehold.it/400x400',
     'key': 3
+  }, {
+    'title': 'item 4',
+    'img': 'http://placehold.it/400x400',
+    'key': 4
   }
 ];
 
