@@ -1,3 +1,10 @@
+`/** @jsx React.DOM */`
+
+React = require "react/addons"
+DropdownButton = require "../dropdown/dropdown"
+#Carousel = require "../carousel/carousel"
+#Modal = require "../modal/modal"
+
 ComponentExample = React.createClass
 	render: ->
 		`<div className="cmp-example">
@@ -8,41 +15,60 @@ ComponentExample = React.createClass
 			</div>
 		</div>`
 
+FixedExample = React.createClass
+	render: ->
+		style =
+			position: 'fixed'
+			top: 0
+			width: '100%'
+			height: 50
+
+		`<div style={style}>
+			<DropdownButton title="title" ref="dropdown" position="fixed" placement="down">
+					<li><a href="" onClick={this.handleClick}>item</a></li>
+					<li><a href="" onClick={this.handleClick}>item1</a></li>
+				</DropdownButton>
+		</div>`
 
 DropdownExample = React.createClass
 	render: ->
-		@transferPropsTo `<DropdownButton
-			onSelect={this.handleSelect} autoClose={true} />`
+		@transferPropsTo `
+		<DropdownButton anchor={this.props.anchor} placement={this.props.placement} ref="dropdown" title="title" onSelect={this.handleSelect} autoClose={true}>
+			<div className="dropdown-content">
+				<h2>I'm a popover</h2>
+				<p>I'm a componible ReactJS component</p>
+				<DropdownButton title="title" ref="dropdown" placement="left">
+					<li><a href="" onClick={this.handleClick}>item</a></li>
+					<li><a href="" onClick={this.handleClick}>item1</a></li>
+				</DropdownButton>
+			</div>
+		</DropdownButton>`
 	
+	handleClick: (e) ->
+		console.log '========== handleClick'
+		e.preventDefault()
+		@refs.dropdown.handleToggle(e)
+
 	handleSelect: (item) ->
 		console.log 'selected', item
 
-TooltipExample = React.createClass
+DropdownApiExample = React.createClass
+
 	render: ->
-		@transferPropsTo `<Tooltip title="a tooltip">{this.props.children}</Tooltip>`
+		`<p>
+			Lorem ipsum dolor sit amet, consectetur adipisicing elit. 
+			Hic, reiciendis ab sint ut vitae earum necessitatibus 
+			excepturi nemo odio nisi quod quaerat porro voluptas 
+			itaque odit officiis rem labore commodi.
+		</p>`
 	
+	handleClick: (e) ->
+		console.log '========== handleClick'
+		e.preventDefault()
+		@refs.dropdown.handleToggle(e)
+
 	handleSelect: (item) ->
 		console.log 'selected', item
-
-PopoverExample = React.createClass
-	render: ->
-		@transferPropsTo `<PopoverButton autoClose={false}>
-			<h2>I'm inside the popover content</h2>
-			<p>I can be composed from other components, such a dropdown.
-			If you have interactions inside a Popover, you may want to pass
-			autoclose=false, so you can interact with it without losing it</p>
-				<DropdownButton items={items} autoClose={true} onSelect={this.handleDropdownSelect} title="with a dropdown in it" />
-		</PopoverButton>`
-
-	handleDropdownSelect: (item) ->
-		console.log 'i got called from the dropdown inside the popver', item
-
-
-items = [
-	{ title: 'item 1' },
-	{ title: 'item 2' }, 
-	{ title: 'item 3' }
-]
 
 carouselItems = [
 	{
@@ -75,6 +101,26 @@ CarouselExample = React.createClass
 	render: ->
 		`<Carousel items={carouselItems} itemComponent={CarouselCustomItem} />`
 
+#
+# MODAL
+#
+
+ModalExample = React.createClass
+	render: ->
+		`<ModalLink ref="modal" title="login">
+			<h2>Please login</h2>
+			<input type="text" placeholder="username" />
+			<input type="password" placeholder="password" />
+		</ModalLink>`
+
+#
+# ALL EXAMPLES
+#
+
+ButtonExample = React.createClass
+	render: ->
+		@transferPropsTo `<Button>I'm a default button</Button>`
+
 Examples = React.createClass
 	render: ->
 		dropdownCode = "var items = [\n
@@ -92,34 +138,30 @@ Examples = React.createClass
 			<DropdownExample items={items} title='show menu' placement='up' anchor='left' />
 		"
 
+
 		popoverCode = "<PopoverButton title='lorem' placement='right'>\n
 			<h2>I'm inside the popover content</h2>\n</PopoverButton>"
 
-		`<div>
-			<h1>Components</h1>
+		return `<div>
+			<h1 data-tooltip="i'm a tooltip?">Components</h1>
 			<ComponentExample name="Dropdown" code={dropdownCode}>
-				<DropdownExample items={items} placement="down" anchor="right" title="show menu" />
+				<FixedExample />
 			</ComponentExample>
-
-			<ComponentExample name="Dropup" code={dropupCode}>
-				<DropdownExample items={items} placement="up" anchor="left" title="show menu" />
-			</ComponentExample>
-
-			<ComponentExample name="Popover" code={popoverCode}>
-				<PopoverExample 
-					placement="right" 
-					title="Lorem ipsum dolor sit amet, consectetur adipisicing elit." />
-			</ComponentExample>
-
-			<ComponentExample name="Tooltip" code={popoverCode}>
-				<Tooltip title="a tooltip" anchor="center" placement="down">Tooltip content</Tooltip>
-			</ComponentExample>
-
-			<ComponentExample name="Carousel" code={popoverCode}>
-				<CarouselExample/>
+			<ComponentExample name="Dropdown" code={dropdownCode}>
+				<DropdownExample placement="down" anchor="center" title="show menu" />
 			</ComponentExample>
 		</div>`
 
+		# 		<ComponentExample name="Modal" code={popoverCode}>
+		# 	<ModalExample />
+		# </ComponentExample>
+		# <ComponentExample name="Carousel" code="">
+		# 	<CarouselExample/>
+		# </ComponentExample>
 
-mountNode = document.getElementById 'content'
-React.renderComponent `<Examples />`, mountNode
+
+
+console.log 'init', document, document.body
+window.onload = ->
+	mountNode = document.body
+	React.renderComponent `<Examples />`, mountNode

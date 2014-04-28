@@ -6,7 +6,6 @@
 	<title>ReactJS components</title>
 	
 	<script src="app/bower_components/jquery/dist/jquery.js"></script>
-	<script src="app/bower_components/react/react-with-addons.js"></script>
 	<script src="app/bower_components/react/JSXTransformer.js"></script>
 	<script src="build/js/all.js" type="text/jsx"></script>
 	
@@ -18,6 +17,17 @@
 	body {
 		font-family: 'Helvetica', sans-serif;
 		color: #444;
+		padding-top: 50px;
+	}
+
+	.backdrop,
+	.dropdown-backdrop {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background: rgba(0, 0, 0, .1);
 	}
 	
 	/* examples */
@@ -31,6 +41,7 @@
 		border: 1px solid #ccc;
 		padding: 20px;
 		margin: 40px 0;
+		text-align: center;
 	}
 
 	.cmp-example h2 {
@@ -65,6 +76,20 @@
 	.comment-item-enter.comment-item-enter-active {
 		opacity: 1;
 	}
+		
+	.slide {
+		-webkit-transition: all 1s ease-out;
+		transition: all 1s ease-out;
+		opacity: 0;
+	}
+	
+	.slide-enter {
+		opacity: 1;
+	}
+	
+	.slide-leave {
+		opacity: 0;
+	}
 	
 
 	/* dropdown */
@@ -73,16 +98,15 @@
 		/*position: relative;*/
 	}
 	
-	.popover .popover-content,
-	.dropdown .dropdown-content,
-	.dropdown .dropdown-menu,
+	.popover-content,
+	.dropdown-content,
+	.dropdown-menu,
 	.tooltip .tooltip-content {
-		opacity: 0;
 		width: 260px;
-		background: #ccc;
 		list-style: none;
 		padding: 0;
 		margin: 0;
+		background: yellow;
 	}
 	
 	.popover.open .popover-content,
@@ -116,39 +140,46 @@
 		position: absolute;
 		bottom: 20px;
 	}
-	
-	/* carousel transitions */
-	.slide-enter,
-	.slide-leave {
-		transition: all .5s ease-out;
+
+	/* modal */
+	.modal-backdrop {
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);	
+    position: fixed;
 	}
 
-	.slide-enter {
-		left: 100%;
-	}
-	
-	.slide-enter.slide-enter-active {
-		left: 0;
-	}
-	
-	.slide-leave {
-		left: 0;
-	}
-
-	.slide-leave.slide-leave-active {
-		left: -100%;
+	.modal-content {
+		position: fixed !important;
+    background: white;
+    width: 400px;
+    min-height: 200px;
+    z-index: 9999;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);    
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
 	}
 
-	.backward .slide-enter {
-		left: -100%;
+	/* skin */
+	.btn {
+		line-height: 1;
+		padding: 16px 24px;
+		display: inline-block;
+		border: 1px solid #ccc;
 	}
 
-	.backward .slide-enter.slide-enter-active {
-		left: 0;
-	}
-
-	.backward .slide-leave.slide-leave-active {
-		left: 100%;
+	@media screen and (max-width: 320px) {
+		.popover-content,
+		.dropdown-content,
+		.dropdown-menu {
+			width: 100%;
+			left: 0 !important;
+		}
 	}
 	</style>
 </head>
