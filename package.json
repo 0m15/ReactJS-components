@@ -17,6 +17,15 @@
   },
   "homepage": "https://github.com/zimok/ReactJS-components",
   "devDependencies": {
-    "react": "~0.10.0"
+    "coffeeify": "^0.6.0",
+    "envify": "^1.2.1",
+    "gulp-browserify": "^0.5.0",
+    "gulp-coffee": "^1.4.2",
+    "gulp-concat": "^2.2.0",
+    "gulp-imagemin": "^0.5.0",
+    "gulp-rename": "^1.2.0",
+    "gulp-uglify": "^0.2.1",
+    "react": "^0.10.0",
+    "reactify": "^0.13.1"
   }
 }
